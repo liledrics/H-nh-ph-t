@@ -1,0 +1,153 @@
+<title>hình phạt</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+  /* Layout: three stacked cards, one visible at a time, centered on the page */
+  :root {
+    --bg: #fff0f5;
+    --card: #ffffff;
+    --fg: #495057;
+    --title: #d6336c;
+    --btn: #ff6b9a;
+    --btn-alt: #adb5bd;
+    --shadow: rgba(255, 105, 150, 0.25);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #2a1820;
+      --card: #3a2630;
+      --fg: #f1d6e0;
+      --title: #ff8fb3;
+      --btn: #e64980;
+      --btn-alt: #6c757d;
+      --shadow: rgba(0, 0, 0, 0.4);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #2a1820;
+    --card: #3a2630;
+    --fg: #f1d6e0;
+    --title: #ff8fb3;
+    --btn: #e64980;
+    --btn-alt: #6c757d;
+    --shadow: rgba(0, 0, 0, 0.4);
+    color-scheme: dark;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    color: var(--fg);
+    text-align: center;
+    overflow: hidden;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    box-sizing: border-box;
+  }
+  .card {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 32px 24px;
+    box-shadow: 0 10px 30px var(--shadow);
+    max-width: 360px;
+    width: 100%;
+    animation: pop 0.4s ease-out;
+  }
+  .emoji {
+    font-size: 4rem;
+    margin: 12px 0;
+    display: inline-block;
+    animation: bounce 1.2s infinite;
+  }
+  h1 { color: var(--title); font-size: 1.5rem; margin: 0 0 12px; text-wrap: balance; }
+  p { line-height: 1.5; margin: 8px 0; }
+  button {
+    border: none;
+    border-radius: 999px;
+    padding: 12px 22px;
+    font-size: 1rem;
+    margin: 6px;
+    cursor: pointer;
+    background: var(--btn);
+    color: #fff;
+    transition: transform 0.15s;
+  }
+  button:hover { transform: scale(1.06); }
+  button:focus-visible { outline: 3px solid var(--title); outline-offset: 3px; }
+  button.alt { background: var(--btn-alt); }
+  .heart {
+    position: fixed;
+    bottom: -40px;
+    font-size: 1.6rem;
+    pointer-events: none;
+    animation: rise 3s linear forwards;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  @keyframes pop {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  @keyframes rise {
+    to { transform: translateY(-110vh) rotate(25deg); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .emoji, .card, .heart { animation: none; }
+    .heart { display: none; }
+  }
+</style>
+
+<div class="card" id="question">
+  <div class="emoji">🍚</div>
+  <h1>Em đã ăn cơm chưa?</h1>
+  <button id="no">Chưa ạ 🙈</button>
+  <button class="alt" id="yes">Rồi ạ ✅</button>
+</div>
+
+<div class="card" id="punish" hidden>
+  <div class="emoji">🤗</div>
+  <h1>Em bị phạt rồi nha!</h1>
+  <p>thtien mà không đi ăn là bị thdat hun một cái á nha 😈</p>
+  <p>Xong rồi đi ăn ngay nha, thtien còn thưởng tiếp 😘</p>
+  <button id="again">Phạt thêm nữa đi 💕</button>
+</div>
+
+<div class="card" id="reward" hidden>
+  <div class="emoji">🥰</div>
+  <h1>Ngoan quá!</h1>
+  <p>thtien thưởng em một cái ôm thật to 🫂</p>
+  <button id="back">Quay lại</button>
+</div>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const cards = ['question', 'punish', 'reward'];
+
+  function show(id) {
+    cards.forEach(c => { $(c).hidden = (c !== id); });
+  }
+
+  function hearts(n) {
+    const symbols = ['❤️', '💖', '💕', '💗', '😘', '🤍'];
+    for (let i = 0; i < n; i++) {
+      const h = document.createElement('span');
+      h.className = 'heart';
+      h.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      h.style.left = Math.random() * 100 + 'vw';
+      h.style.animationDelay = Math.random() * 1.5 + 's';
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 5000);
+    }
+  }
+
+  $('no').addEventListener('click', () => { show('punish'); hearts(30); });
+  $('yes').addEventListener('click', () => { show('reward'); hearts(15); });
+  $('again').addEventListener('click', () => hearts(25));
+  $('back').addEventListener('click', () => show('question'));
+</script>
